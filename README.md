@@ -89,12 +89,26 @@ origin=Developer ID Application: DR Tech Ventures LLC (DJ2RANBKU3)
 
 ## Maintaining this tap
 
-Each iCloud GUI release needs two lines changed in `Casks/icloud-gui.rb` — `version` and
-`sha256` — or Homebrew reports a checksum mismatch and the install fails. The checksum of
-a published release is:
+Each iCloud GUI release needs `version` and `sha256` changed in `Casks/icloud-gui.rb`, or
+Homebrew fails every install with a checksum mismatch — it does not quietly serve the old
+build. `bump.sh` does both:
 
 ```bash
-curl -fsSL https://github.com/DR-Tech-Ventures/icloud-gui/releases/download/vX.Y/iCloud-GUI.dmg | shasum -a 256
+./bump.sh        # whatever is published as the latest release
+./bump.sh 1.5    # a specific version
+```
+
+It reads the release from GitHub, downloads the disk image, hashes it, and rewrites the
+two stanzas. It refuses to write anything if the download 404s or the hash comes back the
+wrong shape, and it is a no-op when the cask already names that version. It leaves the
+commit to you.
+
+It deliberately does **not** touch `depends_on macos:`. A release that raises the minimum
+macOS version needs that edited by hand, with Homebrew's own symbol rather than Apple's
+marketing name:
+
+```bash
+brew ruby -e 'require "macos_version"; puts MacOSVersion::SYMBOLS'
 ```
 
 Then check the result before pushing. `brew audit` and `brew fetch` take a cask *name*,
@@ -109,14 +123,6 @@ brew fetch --cask --force dr-tech-ventures/tap/icloud-gui
 
 `brew install --cask --dry-run dr-tech-ventures/tap/icloud-gui` needs no trust and
 catches deprecated stanzas, which is worth running even without the rest.
-
-A release that raises the minimum macOS version also needs `depends_on macos:` updated.
-Homebrew's symbol for a given version comes from Homebrew itself, not from Apple's
-marketing name:
-
-```bash
-brew ruby -e 'require "macos_version"; puts MacOSVersion::SYMBOLS'
-```
 
 ## Licence
 
