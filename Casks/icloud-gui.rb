@@ -1,6 +1,6 @@
 cask "icloud-gui" do
-  version "1.4"
-  sha256 "206df559c3d9f8715a8326c759f5b70c4144dee4ae5a08016b80d7ce64641b25"
+  version "1.4.1"
+  sha256 "e2b7c65d2fe12e471d66ac0a1b4b7e1dc7d7674e22e44531c9e4dc04ba7b0c20"
 
   url "https://github.com/DR-Tech-Ventures/icloud-gui/releases/download/v#{version}/iCloud-GUI.dmg"
   name "iCloud GUI"
